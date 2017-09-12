@@ -2,6 +2,8 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import json
+import Preprocessing
+from nltk.tokenize import word_tokenize
 
 # consumer key, consumer secret, access token, access secret.
 ckey = "APvGgEdCuQNmKCV1xK0pR9Ytj"
@@ -15,7 +17,18 @@ class listener(StreamListener):
         all_data = json.loads(data)
 
         tweet = all_data["text"]
-        print tweet
+        print(tweet)
+
+        TextBeforeEditing = tweet  #############################################################################Tweets
+
+        FilteredList = []
+        ArabicStopwords = Preprocessing.ArabicStopwords()
+        for w in word_tokenize(TextBeforeEditing):
+            if w not in ArabicStopwords:
+                FilteredList.append(w)
+        print(FilteredList)
+        print(Preprocessing.ArabicStemming(FilteredList))
+
         return True
 
     def on_error(self, status):
@@ -28,5 +41,6 @@ auth.set_access_token(atoken, asecret)
 
 
 twitterStream = Stream(auth, listener())
-twitterStream.filter(track=[""],languages=["ar"])
+list1=twitterStream.filter(track=["egypt"],languages=["ar"])##################################
+
 
