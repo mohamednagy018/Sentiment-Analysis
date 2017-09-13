@@ -15,7 +15,7 @@ class listener(StreamListener):
         all_data = json.loads(data)
 
         tweet = all_data["text"]
-        print tweet
+        print (tweet)
         return True
 
     def on_error(self, status):
@@ -28,5 +28,5 @@ auth.set_access_token(atoken, asecret)
 
 
 twitterStream = Stream(auth, listener())
-twitterStream.filter(track=[""],languages=["ar"])
+twitterStream.filter(track=["egypt"],languages=["ar"])
 

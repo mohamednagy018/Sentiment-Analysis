@@ -10,6 +10,10 @@ import numpy as np
 import pandas as pd
 import re
 
+from numpy.core.tests.test_mem_overlap import xrange
+from pandas.compat import unichr
+
+
 class LABR:
     def __init__(self):
         self.REVIEWS_PATH = "../data/labr_data/"
@@ -157,7 +161,7 @@ class LABR:
             if body == u"": skip = True
 
             if i % 5000 == 0:
-                print "review %d:" % (i)
+                print( "review %d:" % (i))
 
             # write output
             line = u"%s\t%s\t%s\t%s\t%s\n" % (rating, review_id, user_id,
@@ -245,7 +249,7 @@ class LABR:
         elif balanced == "balanced":
             (sizes, bins) = np.histogram(rating, [1, 2, 3, 4, 5, 6])
             min_size = np.min(sizes)
-            print min_size
+            print (min_size)
 
             # sample review ids equally among classes
             test_ids = np.zeros((0,), dtype="int32")
@@ -303,7 +307,7 @@ class LABR:
         elif balanced == "balanced":
             (sizes, bins) = np.histogram(rating, [0, 1, 2])
             min_size = np.min(sizes)
-            print min_size
+            print (min_size)
 
             # sample review ids equally among classes
             test_ids = np.zeros((0,), dtype="int32")
@@ -362,7 +366,7 @@ class LABR:
         elif balanced == "balanced":
             (sizes, bins) = np.histogram(rating, [0, 1, 2, 3])
             min_size = np.min(sizes)
-            print min_size
+            print (min_size)
 
             # sample review ids equally among classes
             test_ids = np.zeros((0,), dtype="int32")
@@ -533,7 +537,7 @@ class LABR:
         elif balanced == "balanced":
             (sizes, bins) = np.histogram(rating, [0, 1, 2, 3])
             min_size = np.min(sizes)
-            print min_size
+            print (min_size)
 
             # sample review ids equally among classes
             test_ids = np.zeros((0,), dtype="int32")
