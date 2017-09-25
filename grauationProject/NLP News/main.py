@@ -31,19 +31,24 @@ for x in range(0, 2):
 
 
 
-"""
+
 
 
 import requests
+import re
 
 link = "https://t.co/YBCXeiHJd4"
 f = requests.get(link)
 
-print (f.text)
+#print (f.text)
+search_obj = re.search(r'<p>(.)*</p>',f.text,flags=0)
+print( search_obj.group())
+all_texts = search_obj.group()
 
 
 
-"""
+
+
 
 
 """
