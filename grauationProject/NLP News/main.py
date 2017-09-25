@@ -36,20 +36,48 @@ for x in range(0, 2):
 
 import requests
 import re
+from html.parser import HTMLParser
 
-link = "https://t.co/YBCXeiHJd4"
-f = requests.get(link)
+def Get_HTML_Script(link):
+   HTML_script =requests.get(link)
+   Script=HTML_script.text
+   return Script
 
-#print (f.text)
-search_obj = re.search(r'<p>(.)*</p>',f.text,flags=0)
-print( search_obj.group())
-all_texts = search_obj.group()
+def Get_Paragraph(HTML_script):
+    Paragraph_array = []
+    for x in HTML_script.split('\n'):
+        search_obj = re.search(r'<p>(.)*</p>', x, flags=0)
+        if search_obj:
+            Paragraph_array.append(search_obj.group())
+    return Paragraph_array
+script=Get_HTML_Script("https://t.co/kN4ETyslz3")
+Paragraph_array=Get_Paragraph(script)
+check_type=""
+all_news=[]
+class MyHTMLParser(HTMLParser):
+    check_type = ""
+    def handle_starttag(self, tag, attrs):
+        self.check_type=tag
 
+    def handle_data(self, data):
+        if self.check_type=="p":
+            all_news.append(data)
+        self.check_type=""
 
-
-
-
-
+parser = MyHTMLParser()
+for x in Paragraph_array:
+ parser.feed(x)
+news=""
+index=0
+for x in all_news:
+    text="#الوطن| بالفيديو| #ناسا تعتزم إطلاق مسبار في 2018 لدراسة «الشمس»"#comment hayt
+    if x==text:
+        index=all_news.index(text)
+        break
+while index!=len(all_news):
+    news=news+all_news[index]
+    index=index+1
+print(news)
 
 """
 class listener(StreamListener):
