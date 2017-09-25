@@ -102,6 +102,7 @@ public class HomeActivity extends AppCompatActivity {
           switch (position){
               case 0:
                   NewsPage newspage = new NewsPage();
+
                   return newspage;
               case 1:
                   TrendPage trendpage = new TrendPage();
