@@ -15,31 +15,35 @@ asecret = "gnM1W1pak2s9BqVEznmZmWleGXmXKPcwXHvwhuwO5rnhi"
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
-
-
-user= api.user_timeline(id='526343521',count = 200)
-
-
-for x in range(0, 200):
-    print(user[x].text)
-    TextBeforeEditing = user[x].text
-    FilteredList = []
-    ArabicStopwords = Preprocessing.ArabicStopwords()
-    for w in word_tokenize(TextBeforeEditing):
-        if w not in ArabicStopwords:
-            FilteredList.append(w)
-    print(FilteredList)
-    print(Preprocessing.ArabicStemming(FilteredList))
-
+ids=['526343521','1000989876']
+for x in range(0, 2):
+    user= api.user_timeline(id = ids[x],count = 5)
+    for x in range(0, 5):
+        print(user[x].text)
+        TextBeforeEditing = user[x].text
+        FilteredList = []
+        ArabicStopwords = Preprocessing.ArabicStopwords()
+        for w in word_tokenize(TextBeforeEditing):
+            if w not in ArabicStopwords:
+                FilteredList.append(w)
+        print(FilteredList)
+        print(Preprocessing.ArabicStemming(FilteredList))
 
 
 
+"""
+
+
+import requests
+
+link = "https://t.co/YBCXeiHJd4"
+f = requests.get(link)
+
+print (f.text)
 
 
 
-
-
-
+"""
 
 
 """
