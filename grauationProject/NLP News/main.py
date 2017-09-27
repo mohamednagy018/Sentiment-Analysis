@@ -49,6 +49,7 @@ for x in text_nolink.split("\n"):
     array_text.append(x)
 text_nolink=array_text[len(array_text)-1]
 text_nolink="مطاعم أمريكية توقف بث مباريات كرة القدم رفضا لحركة نحن"
+text_nolink= re.sub(r'[:!@#$%^&*;,`''""(){}]',"", text_nolink)
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
