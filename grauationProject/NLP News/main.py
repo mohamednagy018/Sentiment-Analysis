@@ -15,11 +15,15 @@ asecret = "gnM1W1pak2s9BqVEznmZmWleGXmXKPcwXHvwhuwO5rnhi"
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 api = tweepy.API(auth)
-ids=['526343521','1000989876']
-for x in range(0, 2):
+#ids=['526343521','1000989876',' 52032722']
+ids=['52032722']
+
+text_withlink=""
+for x in range(0, 1):
     user= api.user_timeline(id = ids[x],count = 5)
     for x in range(0, 5):
         print(user[x].text)
+        text_withlink=user[x].text
         TextBeforeEditing = user[x].text
         FilteredList = []
         ArabicStopwords = Preprocessing.ArabicStopwords()
@@ -37,6 +41,16 @@ for x in range(0, 2):
 import requests
 import re
 from html.parser import HTMLParser
+from difflib import SequenceMatcher
+
+text_nolink =  re.sub(r"http\S+", "", text_withlink)
+array_text = []
+for x in text_nolink.split("\n"):
+    array_text.append(x)
+text_nolink=array_text[len(array_text)-1]
+text_nolink="مطاعم أمريكية توقف بث مباريات كرة القدم رفضا لحركة نحن"
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
 
 def Get_HTML_Script(link):
    HTML_script =requests.get(link)
@@ -46,11 +60,11 @@ def Get_HTML_Script(link):
 def Get_Paragraph(HTML_script):
     Paragraph_array = []
     for x in HTML_script.split('\n'):
-        search_obj = re.search(r'<p>(.)*</p>', x, flags=0)
+        search_obj = re.search(r'<p(.)*>(.)*</p>'  , x, flags=0)
         if search_obj:
             Paragraph_array.append(search_obj.group())
     return Paragraph_array
-script=Get_HTML_Script("https://t.co/kN4ETyslz3")
+script=Get_HTML_Script("https://t.co/ycAYd4TpmE")
 Paragraph_array=Get_Paragraph(script)
 check_type=""
 all_news=[]
@@ -60,24 +74,32 @@ class MyHTMLParser(HTMLParser):
         self.check_type=tag
 
     def handle_data(self, data):
-        if self.check_type=="p":
-            all_news.append(data)
-        self.check_type=""
-
+       if len(Paragraph_array)>0:
+           if self.check_type=="p":
+             all_news.append(data)
+       else:
+            if self.check_type!="a":
+                all_news.append(data)
+       self.check_type=""
 parser = MyHTMLParser()
-for x in Paragraph_array:
- parser.feed(x)
+if len(Paragraph_array)>0:
+ for x in Paragraph_array:
+  parser.feed(x)
+else:
+    parser.feed(script)
 news=""
 index=0
 for x in all_news:
-    text="#الوطن| بالفيديو| #ناسا تعتزم إطلاق مسبار في 2018 لدراسة «الشمس»"#comment hayt
-    if x==text:
-        index=all_news.index(text)
+    print(similar(x,text_nolink))
+    if similar(x,text_nolink)>=.3:
+        index=all_news.index(x)
         break
 while index!=len(all_news):
-    news=news+all_news[index]
+    print(all_news[index])
+    news=all_news[index]+news
     index=index+1
-print(news)
+#print("-------------------------------------------------------------")
+#print(news)
 
 """
 class listener(StreamListener):
