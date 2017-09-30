@@ -10,5 +10,11 @@
     tools:context="com.example.mezo_.test_3.MainActivity">
 
 
-
+    <LinearLayout
+        android:id="@+id/my_root"
+        android:layout_width="368dp"
+        android:layout_height="551dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp"></LinearLayout>
 </android.support.constraint.ConstraintLayout>
