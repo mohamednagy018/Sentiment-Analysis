@@ -7,22 +7,23 @@
     tools:context="com.example.mezo_.test_3.LoginActivity">
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:hint="email"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="135dp"
         android:layout_marginRight="72dp"
         app:layout_constraintRight_toRightOf="parent" />
 
     <EditText
-        android:id="@+id/editText6"
+        android:id="@+id/pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="password"
         android:inputType="textPassword"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="195dp"
