@@ -47,7 +47,7 @@ def normalize(text_withlink):
         def Get_Paragraph(HTML_script):
             Paragraph_array = []
             for x in HTML_script.split('\n'):
-                search_obj = re.search(r'<p(.)*>(.)*</p>'  , x, flags=0)
+                search_obj = re.search(r'<div(.)*><p(.)*>(.)*</p></div>'  , x, flags=0)
                 if search_obj:
                     Paragraph_array.append(search_obj.group())
             return Paragraph_array

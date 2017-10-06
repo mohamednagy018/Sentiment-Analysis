@@ -4,44 +4,49 @@ import re
 from html.parser import HTMLParser
 from difflib import SequenceMatcher
 
-url = "http://feeds.bbci.co.uk/arabic/world/rss.xml" #BBC
-url2 = "https://aawsat.com/feed/news" #Awsaat
-url3 = "https://arabic.cnn.com/world/rss" #CNN
 
-URLS = ["http://feeds.bbci.co.uk/arabic/world/rss.xml","https://aawsat.com/feed/news","https://arabic.cnn.com/world/rss"]
+# url = "http://feeds.bbci.co.uk/arabic/world/rss.xml" #BBC
+# url2 = "https://aawsat.com/feed/news" #Awsaat
+# url3 = "https://arabic.cnn.com/world/rss" #CNN
+
+URLS = ["http://feeds.bbci.co.uk/arabic/world/rss.xml", "https://aawsat.com/feed/news",
+        "https://arabic.cnn.com/world/rss"]
 items = []
 for url in URLS:
     feedparser = fd.parse(url)
     items.append(feedparser["items"])
 
+# print(items[0]) #BBC summary , link = id , title --> Done
+# print(items[1]) #Awsaat value ,  link = link , title --> Done
+# print(items[2]) #CNN summary , link = link, title --> Done
 
-#print(items[0]) #BBC summary , link = id , title --> Done
-#print(items[1]) #Awsaat value ,  link = link , title --> Done
-#print(items[2]) #CNN summary , link = link, title --> Done
-
-#link , summary , title
+# link , summary , title
 summaries = []
 links = []
 titles = []
 
 for item in items:
-    for x in range(0,len(item)):
-        if(item[x]["summary"]):
+    for x in range(0, len(item)):
+        if (item[x]["summary"]):
             summaries.append(item[x]["summary"])
         else:
             summaries.append(item[x]["value"])
-        if(item[x]["link"]):
+        if (item[x]["link"]):
             links.append(item[x]["link"])
         else:
             links.append(item[x]["id"])
         titles.append(item[x]["title"])
 
-
-#print(summaries[1])
-#print(links[1])
-#print(titles[1])
-#--------------------------------------------------------------------------------------------------
-
+# print(summaries[1])
+# print(links[1])
+# print(titles[1])
+print(len(links))
+# ------------------------------------------------------------------------------------------
+"""for item_news in range(0, len(links)):
+    print(titles[item_news])
+    print(summaries[item_news])
+    print(links[item_news])
+"""
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
@@ -68,14 +73,14 @@ class MyHTMLParser(HTMLParser):
 
     def handle_data(self, data):
        if len(Paragraph_array)>0:
-           if self.check_type=="p" or self.check_type=="a":
+           if self.check_type=="p" or self.check_type=="strong":
              all_news.append(data)
        else:
             if self.check_type!="a":
                 all_news.append(data)
        self.check_type=""
 
-
+news_list = []
 for item_news in range(0,len(links)):
     print(summaries[item_news])
     print(links[item_news])
@@ -94,16 +99,25 @@ for item_news in range(0,len(links)):
         parser.feed(script)
     news=""
     index=0
+
+    count = 0
     for x in all_news:
         #print(similar(x,summaries[item_news]))
         if similar(x,summaries[item_news])>=.6:
             index=all_news.index(x)
+            count-=0
             break
-    while index!=len(all_news):
-        print(all_news[index])
-        news+=all_news[index]
-        index=index+1
-    print("-------------------------------------------------------------")
-   #print(news)
+        else:
+            count+=1
+    print(str(count) + "FFFFFFFFFFFFFf")
+    if(count != 12):
+        continue
+    else:
+        while index!=len(all_news):
+            print(all_news[index])
+            news+=all_news[index]
+            index=index+1
+        print("-------------------------------------------------------------")
+    news_list.append(news)
 
- 
+print(news_list[0])

@@ -1,81 +1,88 @@
-import feedparser
-from nltk.stem.isri import ISRIStemmer
+import feedparser as fd
+import requests
+from AWNDatabaseManagement import wn
+
+
+
+import re
 from html.parser import HTMLParser
 from difflib import SequenceMatcher
-import requests
-import re
 
-python_wiki_rss_url = "http://www.youm7.com/rss/SectionRss?SectionID=65"
+# url = "http://feeds.bbci.co.uk/arabic/world/rss.xml" #BBC
+# url2 = "https://aawsat.com/feed/news" #Awsaat
+# url3 = "https://arabic.cnn.com/world/rss" #CNN
 
-feed = feedparser.parse( python_wiki_rss_url )
+URLS = ["http://feeds.bbci.co.uk/arabic/world/rss.xml", "https://aawsat.com/feed/news",
+        "https://arabic.cnn.com/world/rss"]
+items = []
+for url in URLS:
+    feedparser = fd.parse(url)
+    items.append(feedparser["items"])
 
+# print(items[0]) #BBC summary , link = id , title --> Done
+# print(items[1]) #Awsaat value ,  link = link , title --> Done
+# print(items[2]) #CNN summary , link = link, title --> Done
 
-print(feed["items"])
+# link , summary , title
+summaries = []
+links = []
+titles = []
 
-for item in feed["items"]:
-    url = item["link"]
-    print(url)
+for item in items:
+    for x in range(0, len(item)):
+        if (item[x]["summary"]):
+            summaries.append(item[x]["summary"])
+        else:
+            summaries.append(item[x]["value"])
+        if (item[x]["link"]):
+            links.append(item[x]["link"])
+        else:
+            links.append(item[x]["id"])
+        titles.append(item[x]["title"])
 
-
-
-
-text_nolink = "الخارجية تعلن الحركة التكميلية لتنقلات أعضاء السلك الدبلوماسى والقنصلى"
-text_nolink = re.sub(r'[:!@#$%^&*;,`''""(){}]', "", text_nolink)
-
-def similar(a, b):
-    return SequenceMatcher(None, a, b).ratio()
 
 def Get_HTML_Script(link):
    HTML_script =requests.get(link)
    Script=HTML_script.text
    return Script
 
-def Get_Paragraph(HTML_script):
-    Paragraph_array = []
-    for x in HTML_script.split('\n'):
-        search_obj = re.search(r'<p(.)*>(.)*<span(.)*>(.)*</span>(.)*</p>'  , x, flags=0)
-        if search_obj:
-            Paragraph_array.append(search_obj.group())
-    return Paragraph_array
 
+from html.parser import HTMLParser
 
-active_link = url
-script = Get_HTML_Script(active_link)
-Paragraph_array = Get_Paragraph(script)
+array = []
 
-check_type=""
-all_news=[]
+# create a subclass and override the handler methods
 class MyHTMLParser(HTMLParser):
-    check_type = ""
+    global array
     def handle_starttag(self, tag, attrs):
-        self.check_type=tag
+        #print ("Encountered a start tag:", tag)
+        #array.append(tag)
+        tag
+
+    def handle_endtag(self, tag2):
+        #print ("Encountered an end tag :", tag2)
+        #array.append(tag2)
+        tag2
 
     def handle_data(self, data):
-       if len(Paragraph_array)>0:
-           if self.check_type=="p":
-             all_news.append(data)
-       else:
-            if self.check_type!="a":
-                all_news.append(data)
-       self.check_type=""
+        #print ("Encountered some data  :", data)
+        array.append(data)
+
+
+script = Get_HTML_Script(links[0])
+# instantiate the parser and fed it some HTML
+# instantiate the parser and fed it some HTML
 parser = MyHTMLParser()
-if len(Paragraph_array)>0:
- for x in Paragraph_array:
-  parser.feed(x)
-else:
-    parser.feed(script)
-news=""
-index=0
-for x in all_news:
-    print("Text -->" + x + " Score --> " + str(similar(x,text_nolink)))
-    if similar(x,text_nolink)>=0.8:
-        index=all_news.index(x)
-        break
-while index!=len(all_news):
-    print(all_news[index])
-    news+=all_news[index]
-    index=index+1
-print("-------------------------------------------------------------")
-print(news)
+parser.feed(script)
+
+print(array)
+for x in array:
+    if x == "\n" or x == "" or x == " ":
+        array.remove(x)
+
+print(array)
 
 
+for x in array:
+    print(x)
+    print("_______________")
