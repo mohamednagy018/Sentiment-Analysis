@@ -6,11 +6,12 @@ from difflib import SequenceMatcher
 
 
 # url = "http://feeds.bbci.co.uk/arabic/world/rss.xml" #BBC
-# url2 = "https://aawsat.com/feed/news" #Awsaat
+# url2 = "http://www.shorouknews.com/sports/local-sports/rss" #shorouknews
 # url3 = "https://arabic.cnn.com/world/rss" #CNN
+import time
 
-URLS = ["http://feeds.bbci.co.uk/arabic/world/rss.xml", "https://aawsat.com/feed/news",
-        "https://arabic.cnn.com/world/rss"]
+
+URLS = ["http://www.shorouknews.com/sports/local-sports/rss","https://arabic.cnn.com/world/rss","http://feeds.bbci.co.uk/arabic/world/rss.xml"]
 items = []
 for url in URLS:
     feedparser = fd.parse(url)
@@ -37,19 +38,16 @@ for item in items:
             links.append(item[x]["id"])
         titles.append(item[x]["title"])
 
-# print(summaries[1])
-# print(links[1])
-# print(titles[1])
-print(len(links))
-# ------------------------------------------------------------------------------------------
-"""for item_news in range(0, len(links)):
-    print(titles[item_news])
-    print(summaries[item_news])
-    print(links[item_news])
-"""
 
-def similar(a, b):
-    return SequenceMatcher(None, a, b).ratio()
+#print(items[0])
+
+
+def Full_News(news):
+    filtered = re.sub('</?[^>]+>', " ", news)
+    filtered = re.sub(r'[:!@#$%^*,`''""(){}]', "", filtered)
+    filtered = re.sub('&nbsp;', " ", filtered)
+    filtered = re.sub('ndash;', " ", filtered)
+    return filtered
 
 
 def Get_HTML_Script(link):
@@ -58,66 +56,43 @@ def Get_HTML_Script(link):
    return Script
 
 
+all_news = []
 
-def Get_Paragraph(HTML_script):
-    Paragraph_array = []
-    for x in HTML_script.split('\n'):
-        search_obj = re.search(r'<p(.)*>(.)*</p>'  , x, flags=0)
-        if search_obj:
-            Paragraph_array.append(search_obj.group())
-    return Paragraph_array
-class MyHTMLParser(HTMLParser):
-    check_type = ""
-    def handle_starttag(self, tag, attrs):
-        self.check_type=tag
+for x in range(0,len(links)):
+    script = Get_HTML_Script(links[x])
+    print(links[x])
+    final_news = []
+    string = ""
+    if("bbc" in links[x]):
+        content2 = re.findall(r'<p class="story-body__introduction">(.*?)</p>',str(script))
+        if(content2 != ""):
+            final_news.append(content2)
 
-    def handle_data(self, data):
-       if len(Paragraph_array)>0:
-           if self.check_type=="p" or self.check_type=="strong":
-             all_news.append(data)
-       else:
-            if self.check_type!="a":
-                all_news.append(data)
-       self.check_type=""
+        content = re.findall(r'<p>(.*?)</p>', str(script))
+        final_news = content2 + content
+    elif "cnn" in links[x]:
+        content2 = re.findall(r'<p class="story-body__introduction">(.*?)</p>', str(script))
+        if (content2 != ""):
+            final_news.append(content2)
 
-news_list = []
-for item_news in range(0,len(links)):
-    print(summaries[item_news])
-    print(links[item_news])
-    print(titles[item_news])
-    print("####################################################################################")
-    script=Get_HTML_Script(links[item_news])
-    #print(script)
-    Paragraph_array=Get_Paragraph(script)
-    check_type=""
-    all_news=[]
-    parser = MyHTMLParser()
-    if len(Paragraph_array)>0:
-     for x in Paragraph_array:
-      parser.feed(x)
-    else:
-        parser.feed(script)
-    news=""
-    index=0
+        content = re.findall(r'<p>(.*?)</p>', str(script))
+        content = content[:len(content)-2]
+        final_news = content2 + content
 
-    count = 0
-    for x in all_news:
-        #print(similar(x,summaries[item_news]))
-        if similar(x,summaries[item_news])>=.6:
-            index=all_news.index(x)
-            count-=0
-            break
-        else:
-            count+=1
-    print(str(count) + "FFFFFFFFFFFFFf")
-    if(count != 12):
-        continue
-    else:
-        while index!=len(all_news):
-            print(all_news[index])
-            news+=all_news[index]
-            index=index+1
-        print("-------------------------------------------------------------")
-    news_list.append(news)
+    elif "shorouknews" in links[x]:
+        content = re.findall(r'<p>(.*?)</p>', str(script))
+        content = content[:len(content)]
+        final_news =  content
 
-print(news_list[0])
+    for x in final_news:
+        string+=x
+
+    string2=Full_News(string)
+    if(string2 != ""):
+        all_news.append(string2)
+
+
+
+for x in all_news: # final Data Ready To Display :D
+    print(x)
+    print("---------------------")
