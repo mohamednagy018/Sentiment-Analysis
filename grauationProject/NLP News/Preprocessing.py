@@ -22,6 +22,3 @@ def ArabicStemming(text):
         stemmedwords.append(st.stem(w))
     return stemmedwords
 
-
-
-

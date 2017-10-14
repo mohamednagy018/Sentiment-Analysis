@@ -44,7 +44,7 @@ for item in items:
 
 def Full_News(news):
     filtered = re.sub('</?[^>]+>', " ", news)
-    filtered = re.sub(r'[:!@#$%^*,`''""(){}]', "", filtered)
+    filtered = re.sub(r'[:!@#$%^*,`''""(){}]', " ", filtered)
     filtered = re.sub('&nbsp;', " ", filtered)
     filtered = re.sub('ndash;', " ", filtered)
     return filtered
@@ -58,19 +58,19 @@ def Get_HTML_Script(link):
 
 all_news = []
 
-for x in range(0,len(links)):
-    script = Get_HTML_Script(links[x])
-    print(links[x])
+def getAllNews(link):
+    script = Get_HTML_Script(link)
+    print(link)
     final_news = []
     string = ""
-    if("bbc" in links[x]):
+    if("bbc" in link):
         content2 = re.findall(r'<p class="story-body__introduction">(.*?)</p>',str(script))
         if(content2 != ""):
             final_news.append(content2)
 
         content = re.findall(r'<p>(.*?)</p>', str(script))
         final_news = content2 + content
-    elif "cnn" in links[x]:
+    elif "cnn" in link:
         content2 = re.findall(r'<p class="story-body__introduction">(.*?)</p>', str(script))
         if (content2 != ""):
             final_news.append(content2)
@@ -79,7 +79,7 @@ for x in range(0,len(links)):
         content = content[:len(content)-2]
         final_news = content2 + content
 
-    elif "shorouknews" in links[x]:
+    elif "shorouknews" in link:
         content = re.findall(r'<p>(.*?)</p>', str(script))
         content = content[:len(content)]
         final_news =  content
@@ -92,6 +92,10 @@ for x in range(0,len(links)):
         all_news.append(string2)
 
 
+
+
+
+getAllNews(links[0])
 
 for x in all_news: # final Data Ready To Display :D
     print(x)
