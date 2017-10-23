@@ -61,7 +61,6 @@ public class NewsPage extends Fragment  {
     }
 
     public List<rvData> getData() {
-        Log.e("DYYYYYYYYYYY", Descriptions.size() + "");
         for (int i = 0; i < Descriptions.size(); i++) {
             rvData current = new rvData();
             current.titleid = titles[0];
