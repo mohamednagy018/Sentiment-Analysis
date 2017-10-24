@@ -55,7 +55,7 @@ public class NewsPage extends Fragment  {
                 rv.setNestedScrollingEnabled(false);
 
             }
-        }).execute("http://192.168.1.2:8000/stocks/?format=json");
+        }).execute("http://192.168.1.3:8000/stocks/?format=json");
 
         return v;
     }
